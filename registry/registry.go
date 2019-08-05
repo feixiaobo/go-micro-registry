@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/feixiaobo/go-micro-registry/client"
 	"github.com/feixiaobo/go-micro-registry/option"
-	"github.com/feixiaobo/go-plugins/registry/eureka"
 	"github.com/feixiaobo/go-plugins/server/http"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client/selector"
@@ -27,11 +26,6 @@ func (s *Server) Start() {
 
 func register(s *Server) {
 	opts := s.opts
-
-	if len(opts.RegistryAddress) == 0 {
-		log.Errorf("the register address is required")
-		panic("[error] the register address can't be null")
-	}
 
 	name := opts.Name
 	if name == "" {
