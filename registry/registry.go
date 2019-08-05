@@ -43,6 +43,15 @@ func register(s *Server) {
 		ttl = time.Second * 30
 	}
 
+	reties := opts.RequestReties
+	if reties == 0 {
+		reties = 2
+	}
+	timeout := opts.RequestTimeout
+	if timeout == time.Duration(0) {
+		timeout = time.Second * 2
+	}
+
 	addr := fmt.Sprintf("%s:%d", ip, port)
 	instanceId := fmt.Sprintf("%s:%s:%d", ip, name, port)
 
@@ -66,7 +75,7 @@ func register(s *Server) {
 		selector.SetStrategy(selector.RoundRobin),
 	)
 
-	client := client.InitClient(&s.registry, &selector, 3)
+	restclient := client.InitClient(&s.registry, &selector, reties, timeout)
 
 	service := micro.NewService(
 		micro.Name(name),
@@ -74,7 +83,7 @@ func register(s *Server) {
 		micro.Server(ser),
 		micro.Address(addr),
 		micro.Selector(selector),
-		micro.Client(*client),
+		micro.Client(*restclient),
 		micro.RegisterInterval(ttl),
 	)
 

@@ -10,6 +10,8 @@ type Options struct {
 	Name            string
 	Port            int
 	RegisterTTL     time.Duration
+	RequestTimeout  time.Duration //客户端调用超时时间
+	RequestReties   int           //客户端调用重试次数
 	Metadata        map[string]string
 	// Other options for implementations of the interface
 	// can be stored in a context
@@ -67,5 +69,19 @@ func RegisterTTL(ttl time.Duration) Option {
 func Metadata(metaData map[string]string) Option {
 	return func(o *Options) {
 		o.Metadata = metaData
+	}
+}
+
+func RequestTimeout(ttl time.Duration) Option {
+	return func(o *Options) {
+		if ttl > time.Duration(0) {
+			o.RequestTimeout = ttl
+		}
+	}
+}
+
+func RequestReties(reties int) Option {
+	return func(o *Options) {
+		o.RequestReties = reties
 	}
 }
